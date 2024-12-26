@@ -14,22 +14,40 @@ public class MovieService {
     private MovieRepo movieRepo;
 
     @Autowired
-    public List<Movie> getAllMovies(){
-        return movieRepo.findAll();
+    public List<Movie> getAllMovies() {
+        try {
+            return movieRepo.findAll();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Optional<Movie> getMovieById(Long movieId) {
-        return movieRepo.findById(movieId);
+        try {
+            return movieRepo.findById(movieId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Movie addMovie(Movie movie) {
-        return movieRepo.save(movie);
+        try {
+            if (movieRepo.existsByTitle(movie.getTitle())) {  // Corrected here
+                throw new IllegalArgumentException("Movie already exists");
+            }
+            return movieRepo.save(movie);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Movie updateMovie(Long movieId, Movie movieDetails) {
-        Optional<Movie> movieOptional = movieRepo.findById(movieId);
+        try {
+            Optional<Movie> movieOptional = movieRepo.findById(movieId);
 
-        if (movieOptional.isPresent()) {
+            if (movieOptional.isEmpty()) {
+                throw new IllegalArgumentException("Movie not found with id");
+            }
             Movie movie = movieOptional.get();
             movie.setTitle(movieDetails.getTitle());
             movie.setGenre(movieDetails.getGenre());
@@ -37,22 +55,20 @@ public class MovieService {
             movie.setDuration(movieDetails.getDuration());
             movie.setReleaseDate(movieDetails.getReleaseDate());
             movie.setDescription(movieDetails.getDescription());
+
             return movieRepo.save(movie);
-        } else {
-            throw new RuntimeException("Movie not found with id: " + movieId);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void deleteMovie(Long movieId){
-        try{
+    public void deleteMovie(Long movieId) {
+        try {
             movieRepo.deleteById(movieId);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
-            throw new RuntimeException("Error in deleting the mvie" + e);
+            throw new RuntimeException("Error in deleting the movie" + e);
         }
     }
 }
-
-
-

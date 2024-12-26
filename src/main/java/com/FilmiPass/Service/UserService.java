@@ -20,16 +20,30 @@ public class UserService {
     private EmailService emailService;
 
     public List<User> getAllUsers(){
-        return userRepo.findAll();
+        try{
+            return userRepo.findAll();
+        }
+        catch (Exception e){
+            throw  new RuntimeException(e);
+        }
     }
 
-    public User createUser(User user){
-        user.setPassword(passwordEncoder.encode((user.getPassword())));
-        String subject = "Welcome to FilmiPass!";
-        String body = "Hi " + user.getFirstName() + " " + user.getLastName() + ",\n\nWelcome to FilmiPass! We're glad to have you on board.";
+    public User createUser(User user) {
+        try {
 
-        emailService.sendMail(user.getEmail(),subject,body);
+            if (userRepo.existsByEmail(user.getEmail())) {
+                throw new IllegalArgumentException("A user with this email already exists.");
+            }
 
-        return userRepo.save(user);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            String subject = "Welcome to FilmiPass!";
+            String body = "Hi " + user.getFirstName() + " " + user.getLastName() + ",\n\nWelcome to FilmiPass! We're glad to have you on board.";
+            emailService.sendMail(user.getEmail(), subject, body);
+
+            return userRepo.save(user);
+        }
+        catch (Exception e){
+            throw  new RuntimeException(e);
+        }
     }
 }
