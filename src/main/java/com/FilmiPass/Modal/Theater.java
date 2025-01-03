@@ -31,8 +31,8 @@ public class Theater {
     @Column(nullable = false)
     private double ticketPrice;
 
-    @Column(nullable = false)
-    private Long movieId;
+//    @Column(nullable = false)
+//    private Long movieId;
 
     @OneToMany(mappedBy = "theater", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

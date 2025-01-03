@@ -1,5 +1,6 @@
 package com.FilmiPass.Modal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,9 +21,9 @@ public class Showtime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long showtimeId;
 
-    @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theater_id", nullable = false)
+    @JsonBackReference
     private Theater theater;
 
     @Column(nullable = false)

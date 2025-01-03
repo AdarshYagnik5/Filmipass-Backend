@@ -24,6 +24,12 @@ public class Movie {
     private int duration;
     private LocalDate releaseDate;
 
+    @Column(nullable = false)
+    private String theaterId;
+
+    @Column(nullable = false)
+    private String location;
+
     @Column(length = 500)
     private String description;
 }

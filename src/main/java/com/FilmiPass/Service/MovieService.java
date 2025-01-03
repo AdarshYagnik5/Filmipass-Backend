@@ -5,6 +5,8 @@ import com.FilmiPass.Repository.MovieRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +34,7 @@ public class MovieService {
 
     public Movie addMovie(Movie movie) {
         try {
-            if (movieRepo.existsByTitle(movie.getTitle())) {  // Corrected here
+            if (movieRepo.existsByTitle(movie.getTitle()) && movieRepo.existsByLocation(movie.getLocation())) {  // Corrected here
                 throw new IllegalArgumentException("Movie already exists");
             }
             return movieRepo.save(movie);
@@ -69,6 +71,20 @@ public class MovieService {
         } catch (Exception e) {
             System.out.println(e);
             throw new RuntimeException("Error in deleting the movie" + e);
+        }
+    }
+
+    public List<Movie> getMoviesByLocation(String location){
+        if(location == null || location.trim().isEmpty()){
+            throw new IllegalArgumentException("Location cannot be null or empty");
+        }
+        try{
+            List<Movie> movieByLocation = movieRepo.findByLocation(location);
+            return movieByLocation.isEmpty() ? Collections.emptyList() : movieByLocation;
+        }
+        catch (Exception e) {
+            System.err.println("Error fetching movies by location: " + e.getMessage());
+            throw new RuntimeException("Error fetching movie by location", e);
         }
     }
 }

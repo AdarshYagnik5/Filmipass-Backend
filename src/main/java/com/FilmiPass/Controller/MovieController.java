@@ -1,6 +1,7 @@
 package com.FilmiPass.Controller;
 
 import com.FilmiPass.Modal.Movie;
+import com.FilmiPass.Modal.Theater;
 import com.FilmiPass.Service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,11 @@ public class MovieController {
     @GetMapping
     public ResponseEntity<List<Movie>> getAllMovies(){
         return  ResponseEntity.ok(movieService.getAllMovies());
+    }
+
+    @GetMapping("/loc/{location}")
+    public ResponseEntity<List<Movie>> getAllMoviesByLoc(@PathVariable String location){
+        return  ResponseEntity.ok(movieService.getMoviesByLocation(location));
     }
 
     @GetMapping("/{id}")
