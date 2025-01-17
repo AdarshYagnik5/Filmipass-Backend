@@ -26,6 +26,8 @@ public class Showtime {
     @JsonBackReference
     private Theater theater;
 
+
+
     @Column(nullable = false)
     private LocalDate showDate;
 
